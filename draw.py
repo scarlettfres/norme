@@ -55,7 +55,7 @@ if __name__ == '__main__':
     theta_head = fichier1[:, 6]
 
     x_odom = fichier1[:, 7]
-    y_odom = -fichier1[:, 8]
+    y_odom = fichier1[:, 8]
     theta_odom = fichier1[:, 9]
 
     command = fichier1[0][10]

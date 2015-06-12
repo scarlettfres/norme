@@ -160,18 +160,17 @@ if __name__ == "__main__":
 
                     # print "##Iam", resp_fin.x, resp_fin.y, resp_fin.theta
                     # save the data in a file
-                    delta_x = resp_depart.x - resp_fin.x
-                    delta_y = resp_depart.y - resp_fin.y
-                    delta_theta = resp_depart.theta - resp_fin.theta
+                    delta_x = resp_fin.x
+                    delta_y = resp_fin.y
+                    delta_theta = resp_fin.theta
 
-                    delta_tete_x = tete_depart.x - tete_fin.x
-                    delta_tete_y = tete_depart.y - tete_fin.y
-                    delta_tete_theta = tete_depart.theta - tete_fin.theta
+                    delta_tete_x = tete_fin.x
+                    delta_tete_y = tete_fin.y
+                    delta_tete_theta = tete_fin.theta
 
-                    delta_odom_x = odom_depart.x - odom_fin.x
-                    delta_odom_y = odom_depart.y - odom_fin.y
-                    delta_odom_theta = odom_depart.theta - odom_fin.theta
-
+                    delta_odom_x = odom_fin.x
+                    delta_odom_y = odom_fin.y
+                    delta_odom_theta = odom_fin.theta
                     # resp_fin.x, resp_fin.y, resp_fin.theta ???
                     message = str(i) + "," + str(delta_x) + ","
                     message = message + str(delta_y) + "," + str(delta_theta)
