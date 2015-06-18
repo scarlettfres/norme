@@ -34,7 +34,6 @@ def read_config_file_section(config_file_path, section):
         Use ConfigParser for reading a configuration file.
         Returns an dictionnary with keys/values of the section.
     """
-
     config = ConfigParser.ConfigParser()
     config.optionxform = str
     config.read(config_file_path)
@@ -72,12 +71,7 @@ def go_to_init_zone(NBR_POSITIONEMENT_DEPART, POSITION_DEPART):
                 POSITION_DEPART[0], POSITION_DEPART[1], POSITION_DEPART[2])
             print resp
 
-        # rospy.wait_for_service('how_to_go')
-        # how_to_go = rospy.ServiceProxy('how_to_go', HowToGo)
-        # resp = how_to_go(0, 0, 0)
-
         # au 2e iteration , pas de grd mvts normalement
-
         if k == 1 or k == 2:
             if abs(resp.x) > SECU or abs(resp.y) > SECU:
                 print "##secuuu :  ", resp.x, resp.y, resp.theta
@@ -85,16 +79,13 @@ def go_to_init_zone(NBR_POSITIONEMENT_DEPART, POSITION_DEPART):
                 resp.x = 0
                 resp.y = 0
                 resp.theta = 0
-
         print "##I need to :  ", resp.x, resp.y, resp.theta
         if motionProxy.moveIsActive() == False:
             motionProxy.post.moveTo(resp.x, resp.y, resp.theta)
             motionProxy.waitUntilMoveIsFinished()
             k += 1
 
-
 if __name__ == "__main__":
-
     straight = read_config_file_section("config.cfg", "Straight")
     PATH = straight['PATH'][0]
     TITLE = straight['TITLE'][0]
@@ -125,59 +116,31 @@ if __name__ == "__main__":
         outf.write('number,x,y,theta,cmd_value \n')
 
         for i in range(0, NBR_ESSAIS):
-            print" iiii", i
             # go to depart zone
             # 3 times to be sure it is in the right depart zone
             go_to_init_zone(NBR_POSITIONEMENT_DEPART, POSITION_DEPART)
             time.sleep(1)
-            rospy.wait_for_service('where_is')
-            where_is = rospy.ServiceProxy('where_is', WhereIs)
-            resp_depart = where_is(FRAME_TO_TRACK)
-            tete_depart = where_is("ar_marker_16")
-            # ask_tf = rospy.ServiceProxy('ask_tf', AskTf)
-
-            # !!! the odom gave by getRobotPosition is not in the same plan
-            # than the coordiantes given by mark_tracker
-
-            ask_tf = rospy.ServiceProxy('ask_tf', AskTf)
-            odom_depart = ask_tf("odom_base_link", "map")
-
-            print "##Iam", resp_depart.x, resp_depart.y, resp_depart.theta
-
+            begin = time.time()
             # go to command value
             motionProxy.post.moveTo(CMD_VALUE)
-
             compteur = 0
             while motionProxy.moveIsActive():
-                if compteur == 2:   # varia ble magique
+                if compteur == 2:   # variable magique
                     rospy.wait_for_service('where_is')
                     where_is = rospy.ServiceProxy('where_is', WhereIs)
-                    resp_fin = where_is(FRAME_TO_TRACK)
-                    tete_fin = where_is("ar_marker_16")
-                    # ask_tf = rospy.ServiceProxy('ask_tf', AskTf)
-                    ask_tf = rospy.ServiceProxy('ask_tf', AskTf)
-                    odom_fin = ask_tf("odom_base_link", "map")
+                    resp_fin = where_is(FRAME_TO_TRACK, "map")
+                    tete_fin = where_is("ar_marker_16", "map")
+                    odom_fin = where_is("tf_odom_to_baselink", "map")
 
-                    # print "##Iam", resp_fin.x, resp_fin.y, resp_fin.theta
                     # save the data in a file
-                    delta_x = resp_fin.x
-                    delta_y = resp_fin.y
-                    delta_theta = resp_fin.theta
-
-                    delta_tete_x = tete_fin.x
-                    delta_tete_y = tete_fin.y
-                    delta_tete_theta = tete_fin.theta
-
-                    delta_odom_x = odom_fin.x
-                    delta_odom_y = odom_fin.y
-                    delta_odom_theta = odom_fin.theta
-                    # resp_fin.x, resp_fin.y, resp_fin.theta ???
-                    message = str(i) + "," + str(delta_x) + ","
-                    message = message + str(delta_y) + "," + str(delta_theta)
-                    message = message + "," + str(delta_tete_x) + "," + str(
-                        delta_tete_y) + "," + str(delta_tete_theta)
-                    message = message + "," + str(delta_odom_x) + "," + str(
-                        delta_odom_y) + "," + str(delta_odom_theta)
+                    message = str(i) + "," + str(time.time() - begin) + "," + str(
+                        resp_fin.x) + ","
+                    message = message + str(
+                        resp_fin.y) + "," + str(resp_fin.theta)
+                    message = message + "," + str(tete_fin.x) + "," + str(
+                        tete_fin.y) + "," + str(tete_fin.theta)
+                    message = message + "," + str(odom_fin.x) + "," + str(
+                        odom_fin.y) + "," + str(odom_fin.theta)
                     message = message + "," + str(CMD_VALUE) + "\n"
                     outf.write(message)
                     print "message \n : ", message

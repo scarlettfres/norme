@@ -45,20 +45,20 @@ if __name__ == '__main__':
     testnum = fichier1[:, 0]
     # print "OOOOOOOOOO", type(testnum)
     # print fichier1
+    temps = fichier1[:, 1]
+    x = fichier1[:, 2]
+    y = fichier1[:, 3]
+    theta = fichier1[:, 4]  # - fichier1[0][3]
 
-    x = fichier1[:, 1]
-    y = fichier1[:, 2]
-    theta = fichier1[:, 3]
+    x_head = fichier1[:, 5]
+    y_head = fichier1[:, 6]
+    theta_head = fichier1[:, 7]  # - fichier1[0][6]
 
-    x_head = fichier1[:, 4]
-    y_head = fichier1[:, 5]
-    theta_head = fichier1[:, 6]
+    x_odom = fichier1[:, 8]
+    y_odom = fichier1[:, 9]
+    theta_odom = fichier1[:, 10]  # - fichier1[0][9]
 
-    x_odom = fichier1[:, 7]
-    y_odom = fichier1[:, 8]
-    theta_odom = fichier1[:, 9]
-
-    command = fichier1[0][10]
+    command = fichier1[0][11]
     nbr_essais = int(testnum.max()) + 1
     print nbr_essais
 
@@ -68,16 +68,16 @@ if __name__ == '__main__':
         for it in range(0, nbr_essais):  # pour chaque essai
             if testnum[i] == it:
                 final_tab[it].append(
-                    [x[i], y[i], theta[i], x_head[i], y_head[i], theta_head[i], x_odom[i], y_odom[i], theta_odom[i]])
+                    [temps[i], x[i], y[i], theta[i], x_head[i], y_head[i], theta_head[i], x_odom[i], y_odom[i], theta_odom[i]])
     for it in range(0, nbr_essais):
 
-        print it
         vect = final_tab[it]
+        print final_tab[0][0]
         print len(vect)
         vect = numpy.asarray(vect)
         size = len(vect)
         f = plt.figure(it)
-        f, (pl1, pl2) = plt.subplots(1, 2, sharex=True, sharey=True)
+        f, (pl1, pl2, pl3) = plt.subplots(1, 3, sharex=False, sharey=False)
         pl1.set_title("base_link ")
         pl1.grid(True)
         # print vect
@@ -91,20 +91,21 @@ if __name__ == '__main__':
         # 111111111111111111111111111111111111111111111111111111111
         for i in range(0, size):    # pour chaque ligne
 
-            dx = cos(vect[i][2]) / 20
-            dy = sin(vect[i][2]) / 20
+            dx = cos(vect[i][3]) / 20
+            dy = sin(vect[i][3]) / 20
             dx_nor = dx / ceil(dx ** 2 + dy ** 2)
             dy_nor = dy / ceil(dx ** 2 + dy ** 2)
 
-            dx_odom = cos(vect[i][8]) / 20
-            dy_odom = sin(vect[i][8]) / 20
+            dx_odom = cos(vect[i][9]) / 20
+            dy_odom = sin(vect[i][9]) / 20
             dx_odom_nor = dx_odom / ceil(dx_odom ** 2 + dy_odom ** 2)
             dy_odom_nor = dy_odom / ceil(dx_odom ** 2 + dy_odom ** 2)
 
             pl1.arrow(
-                vect[i][0], vect[i][1], dx_nor, dy_nor, head_width=0.005, head_length=0.01)
-            pl1.arrow(
-                vect[i][6], vect[i][7], dx_odom_nor, dy_odom_nor, head_width=0.005, head_length=0.01, color='r')
+                vect[i][1], vect[i][2], dx_nor, dy_nor, head_width=0.005, head_length=0.01)
+            # pl1.arrow(
+            # vect[i][6], vect[i][7], dx_odom_nor, dy_odom_nor,
+            # head_width=0.005, head_length=0.01, color='r')
         pl1.axis([-2, 2, -2, 2])
 
         pl2.set_title("head ")
@@ -120,22 +121,31 @@ if __name__ == '__main__':
 
         # 2222222222222222222222222222222222222222222222222222222
         for i in range(0, size):    # pour chaque ligne
-            dx_tete = cos(vect[i][5]) / 20
-            dy_tete = sin(vect[i][5]) / 20
+            dx_tete = cos(vect[i][6]) / 20
+            dy_tete = sin(vect[i][6]) / 20
             dx_nor_tete = dx_tete / ceil(dx_tete ** 2 + dy_tete ** 2)
             dy_nor_tete = dy_tete / ceil(dx_tete ** 2 + dy_tete ** 2)
 
-            dx_odom = cos(vect[i][8]) / 20
-            dy_odom = sin(vect[i][8]) / 20
+            dx_odom = cos(vect[i][9]) / 20
+            dy_odom = sin(vect[i][9]) / 20
             dx_odom_nor = dx_odom / ceil(dx_odom ** 2 + dy_odom ** 2)
             dy_odom_nor = dy_odom / ceil(dx_odom ** 2 + dy_odom ** 2)
 
             pl2.arrow(
-                vect[i][3], vect[i][4], dx_nor_tete, dy_nor_tete, head_width=0.005, head_length=0.01)
+                vect[i][4], vect[i][5], dx_nor_tete, dy_nor_tete, head_width=0.005, head_length=0.01)
             pl2.arrow(
-                vect[i][6], vect[i][7], dx_odom_nor, dy_odom_nor, head_width=0.005, head_length=0.01, color='r')
+                vect[i][7], vect[i][8], dx_odom_nor, dy_odom_nor, head_width=0.005, head_length=0.01, color='r')
         pl2.axis([-2, 2, -2, 2])
 
+        pl3.set_title("base_link ")
+        pl3.grid(True)
+        print vect[3]
+        print vect[9]
+        print "temps", vect[0]
+        pl3.plot(vect[0], vect[3], '.')
+        pl3.plot(vect[0], vect[9], '.')
+        pl3.axis([0, 7, -200, 200])
         plt.title(sys.argv[1] + "command= " + str(command))
+
     plt.draw()
     plt.show()
