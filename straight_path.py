@@ -61,7 +61,7 @@ def go_to_init_zone(NBR_POSITIONEMENT_DEPART, POSITION_DEPART, INIT_ODOM_STEP):
             how_to_go_to_mark = rospy.ServiceProxy(
                 'how_to_go_to_mark', HowToGoToMark)
             resp = how_to_go_to_mark(POSITION_DEPART[0])  # or to 0,0,0 ??
-            print resp
+            # print resp
             if resp.result == False:     # to fiiiix
                 k = k - 1
         if len(POSITION_DEPART) == 3:
@@ -71,24 +71,24 @@ def go_to_init_zone(NBR_POSITIONEMENT_DEPART, POSITION_DEPART, INIT_ODOM_STEP):
             # or to 0,0,0 ??
             resp = how_to_go(
                 POSITION_DEPART[0], POSITION_DEPART[1], POSITION_DEPART[2])
-            print resp
+            # print resp
 
         # au 2e iteration , pas de grd mvts normalement
         if k == 1 or k == 2:
             if abs(resp.x) > SECU or abs(resp.y) > SECU:
-                print "##secuuu :  ", resp.x, resp.y, resp.theta
-                print "k=", k
+                # print "##secuuu :  ", resp.x, resp.y, resp.theta
+                # print "k=", k
                 resp.x = 0
                 resp.y = 0
                 resp.theta = 0
-        print "##I need to :  ", resp.x, resp.y, resp.theta
+        # print "##I need to :  ", resp.x, resp.y, resp.theta
         if motionProxy.moveIsActive() == False:
             motionProxy.post.moveTo(resp.x, resp.y, resp.theta)
             motionProxy.waitUntilMoveIsFinished()
             k += 1
 
     if INIT_ODOM_STEP == 1:
-        print INIT_ODOM_STEP
+        # print INIT_ODOM_STEP
         reset_odom = rospy.ServiceProxy('reset_odom', Empty)
         reset_odom()
 
@@ -144,18 +144,17 @@ if __name__ == "__main__":
                 motionProxy.waitUntilMoveIsFinished()
 
                 motionProxy.post.moveTo(CMD_VALUE[step])
-                compteur = 0
+                # if the move didn't start, we don't enter in the while loop
+                time.sleep(0.1)
+                print motionProxy.moveIsActive()
                 while motionProxy.moveIsActive():
-                    # if compteur == 2:   # variable magique
-                    print" saving in file ...getdaa "
-                    print compteur
                     rospy.wait_for_service('where_is')
                     where_is = rospy.ServiceProxy('where_is', WhereIs)
                     resp_fin = where_is(FRAME_TO_TRACK, "map")
                     tete_fin = where_is("ar_marker_16", "map")
                     odom_fin = where_is("tf_odom_to_baselink", "map")
-
                     print" saving in file ...write in doc "
+
                     # save the data in a file
                     message = str(i) + "," + str(time.time() - begin) + "," + str(
                         resp_fin.x) + ","
@@ -167,10 +166,7 @@ if __name__ == "__main__":
                         odom_fin.y) + "," + str(odom_fin.theta)
                     message = message + "," + str(CMD_VALUE) + "\n"
                     outf.write(message)
-                    time.sleep(0.1)
-                    # print "message \n : ", message
-                    compteur = 0
-                    #compteur += 1
+                    time.sleep(0.05)
 
     except rospy.ServiceException, e:
         print "Service call failed: %s" % e
