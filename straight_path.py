@@ -4,11 +4,13 @@ import rospy
 from mark_tracker_tools.srv import *
 import time
 import ConfigParser
-
+import numpy as np
 import datetime
 import naoqi
 from naoqi import ALProxy
+from std_srvs.srv import Empty, EmptyResponse
 from os import chdir
+import json
 
 
 def sign(var):
@@ -47,7 +49,7 @@ def read_config_file_section(config_file_path, section):
         return {}
 
 
-def go_to_init_zone(NBR_POSITIONEMENT_DEPART, POSITION_DEPART):
+def go_to_init_zone(NBR_POSITIONEMENT_DEPART, POSITION_DEPART, INIT_ODOM_STEP):
     """
         go to POSITION_DEPART
     """
@@ -85,13 +87,20 @@ def go_to_init_zone(NBR_POSITIONEMENT_DEPART, POSITION_DEPART):
             motionProxy.waitUntilMoveIsFinished()
             k += 1
 
+    if INIT_ODOM_STEP == 1:
+        print INIT_ODOM_STEP
+        reset_odom = rospy.ServiceProxy('reset_odom', Empty)
+        reset_odom()
+
+
 if __name__ == "__main__":
     straight = read_config_file_section("config.cfg", "Straight")
     PATH = straight['PATH'][0]
     TITLE = straight['TITLE'][0]
     NBR_ESSAIS = int(straight['NBR_ESSAIS'][0])
     POSITION_DEPART = straight['POSITION_DEPART']
-
+    INIT_ODOM_STEP = int(straight['INIT_ODOM_STEP'][0])
+    print INIT_ODOM_STEP
     if len(POSITION_DEPART) == 1:
         POSITION_DEPART = [int(POSITION_DEPART[0])]
     elif len(POSITION_DEPART) == 3:
@@ -101,9 +110,10 @@ if __name__ == "__main__":
 
     NBR_POSITIONEMENT_DEPART = int(straight['NBR_POSITIONEMENT_DEPART'][0])
     FRAME_TO_TRACK = straight['FRAME_TO_TRACK'][0]
-    CMD_VALUE = (float(
-        straight['CMD_VALUE'][0]), float(straight['CMD_VALUE'][
-            1]), float(straight['CMD_VALUE'][2]))
+
+    parser = ConfigParser.SafeConfigParser()
+    parser.read("config.cfg")
+    CMD_VALUE = json.loads(parser.get("Straight", "CMD_VALUE"))
 
     SECU = float(straight['SECU'][0])
     IP = straight['IP'][0]
@@ -116,22 +126,36 @@ if __name__ == "__main__":
         outf.write('number,x,y,theta,cmd_value \n')
 
         for i in range(0, NBR_ESSAIS):
+            print "00000000000000000000000000000000000000000000000"
+            print i
+            print "00000000000000000000000000000000000000000000000"
             # go to depart zone
             # 3 times to be sure it is in the right depart zone
-            go_to_init_zone(NBR_POSITIONEMENT_DEPART, POSITION_DEPART)
+            go_to_init_zone(
+                NBR_POSITIONEMENT_DEPART, POSITION_DEPART, INIT_ODOM_STEP)
             time.sleep(1)
             begin = time.time()
             # go to command value
-            motionProxy.post.moveTo(CMD_VALUE)
-            compteur = 0
-            while motionProxy.moveIsActive():
-                if compteur == 2:   # variable magique
+            print "len(CMD_VALUE)", len(CMD_VALUE)
+            print "len(CMD_VALUE)[0]", len(CMD_VALUE[0])
+            for step in range(0, len(CMD_VALUE)):
+                print CMD_VALUE[step]
+                print step
+                motionProxy.waitUntilMoveIsFinished()
+
+                motionProxy.post.moveTo(CMD_VALUE[step])
+                compteur = 0
+                while motionProxy.moveIsActive():
+                    # if compteur == 2:   # variable magique
+                    print" saving in file ...getdaa "
+                    print compteur
                     rospy.wait_for_service('where_is')
                     where_is = rospy.ServiceProxy('where_is', WhereIs)
                     resp_fin = where_is(FRAME_TO_TRACK, "map")
                     tete_fin = where_is("ar_marker_16", "map")
                     odom_fin = where_is("tf_odom_to_baselink", "map")
 
+                    print" saving in file ...write in doc "
                     # save the data in a file
                     message = str(i) + "," + str(time.time() - begin) + "," + str(
                         resp_fin.x) + ","
@@ -143,10 +167,10 @@ if __name__ == "__main__":
                         odom_fin.y) + "," + str(odom_fin.theta)
                     message = message + "," + str(CMD_VALUE) + "\n"
                     outf.write(message)
-                    print "message \n : ", message
+                    time.sleep(0.1)
+                    # print "message \n : ", message
                     compteur = 0
-                compteur += 1
-            time.sleep(1)
+                    #compteur += 1
 
     except rospy.ServiceException, e:
         print "Service call failed: %s" % e
