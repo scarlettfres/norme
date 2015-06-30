@@ -7,7 +7,7 @@ MARK_TO_ROBOT: 16
 MARK_TO_ROBOT_POSITION: 0.07 0.54 0
 ROBOT_FRAME : robot1/HeadTouchFront_frame
 ADD_MARK:3
-PATH: /home/sfress/norme/good_calib
+PATH: /home/sfress/norme/good calib
 
 [Straight]
 PATH : /home/sfress/norme/csv/      ; where to save the data
