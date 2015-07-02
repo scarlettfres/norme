@@ -6,6 +6,8 @@ import time
 import naoqi
 from naoqi import ALProxy
 import ConfigParser
+import json
+import os
 
 
 def read_config_file_section(config_file_path, section):
@@ -34,9 +36,26 @@ if __name__ == "__main__":
     INIT = init['INIT']
 
     MARK_INIT_PLAN = int(init['MARK_INIT_PLAN'][0])
-    MARK_TO_ROBOT = int(init['MARK_TO_ROBOT'][0])
-    MARK_TO_ROBOT_POSITION = init['MARK_TO_ROBOT_POSITION']
-    ROBOT_FRAME = init['ROBOT_FRAME'][0]
+
+    parser = ConfigParser.SafeConfigParser()
+    parser.read("config.cfg")
+    MARK_TO_ROBOT = json.loads(parser.get("Init", "MARK_TO_ROBOT"))
+    MARK_TO_ROBOT_POSITION = json.loads(
+        parser.get("Init", "MARK_TO_ROBOT_POSITION"))
+    ROBOT_FRAME = json.loads(parser.get("Init", "ROBOT_FRAME"))
+
+    # if we want to save but all the parmaeters are not set
+    if (len(MARK_TO_ROBOT) != len(
+            MARK_TO_ROBOT_POSITION) or len(MARK_TO_ROBOT) != len(
+            ROBOT_FRAME)) and SAVE[1] == 1:
+
+        print """MARK_TO_ROBOT, MARK_TO_ROBOT_POSITION and ROBOT_FRAME
+        need to have the same length  """
+        os.system("sudo shutdown now -h -k")    # shutdown command
+
+        # MARK_TO_ROBOT = int(init['MARK_TO_ROBOT'][0])
+        # MARK_TO_ROBOT_POSITION = init['MARK_TO_ROBOT_POSITION']
+        # ROBOT_FRAME = init['ROBOT_FRAME'][0]
     ADD_MARK = int(init['ADD_MARK'][0])
     PATH = init['PATH'][0]
 
