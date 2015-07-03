@@ -42,8 +42,13 @@ if __name__ == "__main__":
     MARK_TO_ROBOT = json.loads(parser.get("Init", "MARK_TO_ROBOT"))
     MARK_TO_ROBOT_POSITION = json.loads(
         parser.get("Init", "MARK_TO_ROBOT_POSITION"))
-    ROBOT_FRAME = json.loads(parser.get("Init", "ROBOT_FRAME"))
 
+    # print MARK_TO_ROBOT, MARK_TO_ROBOT_POSITION
+    ROBOT_FRAME = json.loads(parser.get("Init", "ROBOT_FRAME"))
+    print len(ROBOT_FRAME)
+    print "MARK_TO_ROBOT", MARK_TO_ROBOT
+    print "MARK_TO_ROBOT_POSITION", MARK_TO_ROBOT_POSITION
+    print "ROBOT_FRAME", ROBOT_FRAME
     # if we want to save but all the parmaeters are not set
     if (len(MARK_TO_ROBOT) != len(
             MARK_TO_ROBOT_POSITION) or len(MARK_TO_ROBOT) != len(
@@ -56,6 +61,7 @@ if __name__ == "__main__":
         # MARK_TO_ROBOT = int(init['MARK_TO_ROBOT'][0])
         # MARK_TO_ROBOT_POSITION = init['MARK_TO_ROBOT_POSITION']
         # ROBOT_FRAME = init['ROBOT_FRAME'][0]
+
     ADD_MARK = int(init['ADD_MARK'][0])
     PATH = init['PATH'][0]
 
@@ -73,15 +79,19 @@ if __name__ == "__main__":
 
         time.sleep(1)
         if int(INIT[1]) == 1:  # init head
-            rospy.wait_for_service('init_mark_to_robot')
-            init_mark_to_robot = rospy.ServiceProxy(
-                'init_mark_to_robot', InitMarkToRobot)
-            resp = init_mark_to_robot(
-                MARK_TO_ROBOT, float(MARK_TO_ROBOT_POSITION[
-                    0]), float(MARK_TO_ROBOT_POSITION[
-                        1]), float(MARK_TO_ROBOT_POSITION[
-                            2]), ROBOT_FRAME, int(SAVE[1]))
-            print "##Init mark to head", resp.result
+
+            for i in range(0, len(MARK_TO_ROBOT)):
+
+                print i
+                rospy.wait_for_service('init_mark_to_robot')
+                init_mark_to_robot = rospy.ServiceProxy(
+                    'init_mark_to_robot', InitMarkToRobot)
+                resp = init_mark_to_robot(
+                    MARK_TO_ROBOT[i], MARK_TO_ROBOT_POSITION[i][0],
+                    MARK_TO_ROBOT_POSITION[i][1], MARK_TO_ROBOT_POSITION[i][2],
+                    ROBOT_FRAME[i], int(SAVE[1]))
+
+                print "##Init mark to head", resp.result
 
         if int(INIT[2]) == 1:  # init head
             rospy.wait_for_service('add_mark')
