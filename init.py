@@ -74,7 +74,7 @@ if __name__ == "__main__":
 
             init_plan = rospy.ServiceProxy('init_plan', InitPlan)
             # init_plan(num_mark, True to save in a file )
-            resp = init_plan(MARK_INIT_PLAN, int(SAVE[0]))
+            resp = init_plan(MARK_INIT_PLAN, int(SAVE[0]), PATH)
             print "##Initplan", resp.result
 
         time.sleep(1)
@@ -89,14 +89,14 @@ if __name__ == "__main__":
                 resp = init_mark_to_robot(
                     MARK_TO_ROBOT[i], MARK_TO_ROBOT_POSITION[i][0],
                     MARK_TO_ROBOT_POSITION[i][1], MARK_TO_ROBOT_POSITION[i][2],
-                    ROBOT_FRAME[i], int(SAVE[1]))
+                    ROBOT_FRAME[i], int(SAVE[1]), PATH)
 
                 print "##Init mark to head", resp.result
 
         if int(INIT[2]) == 1:  # init head
             rospy.wait_for_service('add_mark')
             add_mark = rospy.ServiceProxy('add_mark', AddMark)
-            resp = add_mark(ADD_MARK, int(SAVE[2]))
+            resp = add_mark(ADD_MARK, int(SAVE[2]), PATH)
             if resp.result == True:
                 print"##new mark learnt!"
             else:
