@@ -8,6 +8,7 @@ from naoqi import ALProxy
 import ConfigParser
 import json
 import os
+from os import chdir
 from os.path import expanduser
 
 
@@ -31,7 +32,10 @@ def read_config_file_section(config_file_path, section):
 
 if __name__ == "__main__":
 
+    print sys.argv
+    chdir(sys.argv[1])
     init = read_config_file_section("config.cfg", "Init")
+    print init
     LOAD = init['LOAD']
     SAVE = init['SAVE']
     INIT = init['INIT']
