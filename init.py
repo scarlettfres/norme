@@ -8,6 +8,7 @@ from naoqi import ALProxy
 import ConfigParser
 import json
 import os
+from os.path import expanduser
 
 
 def read_config_file_section(config_file_path, section):
@@ -63,7 +64,7 @@ if __name__ == "__main__":
         # ROBOT_FRAME = init['ROBOT_FRAME'][0]
 
     ADD_MARK = int(init['ADD_MARK'][0])
-    PATH = init['PATH'][0]
+    PATH = expanduser("~") + init['PATH'][0]
 
     try:
         # give postion robot
