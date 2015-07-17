@@ -1,10 +1,10 @@
 [Init]
-LOAD: 0 1 0
-INIT: 1 0 0
+LOAD: 0 0 0
+INIT: 1 1 0
 SAVE: 0 1 0
 MARK_INIT_PLAN: 3
 MARK_TO_ROBOT: [16]
-MARK_TO_ROBOT_POSITION: [[1.21,0,0]]
+MARK_TO_ROBOT_POSITION: [[1.27,-2.03,0]]
 ROBOT_FRAME : ["monica/HeadTouchFront_frame"]
 ADD_MARK:3
 PATH: /catkin_ws/src/norme/good_calib
