@@ -1,13 +1,13 @@
 [Init]
-LOAD: 1 1 1
-INIT: 0 0 0
-SAVE: 1 1 1
-MARK_INIT_PLAN: 12
-MARK_TO_ROBOT: 16
-MARK_TO_ROBOT_POSITION: 0.07 0.54 0
-ROBOT_FRAME : robot1/HeadTouchFront_frame
+LOAD: 0 1 0
+INIT: 1 0 0
+SAVE: 0 1 0
+MARK_INIT_PLAN: 3
+MARK_TO_ROBOT: [16]
+MARK_TO_ROBOT_POSITION: [[1.21,0,0]]
+ROBOT_FRAME : ["monica/HeadTouchFront_frame"]
 ADD_MARK:3
-PATH: /home/sfress/norme/good calib
+PATH: /catkin_ws/src/norme/good_calib
 
 [Straight]
 PATH : /home/sfress/norme/csv/      ; where to save the data
@@ -17,7 +17,7 @@ POSITION_DEPART : -0.3 -0.5 -3.14   ; or the ID of the mark saved
 NBR_POSITIONEMENT_DEPART : 3        ; how many times the robot position itself to be sure it is in the right place
 
 FRAME_TO_TRACK : base_link          ; what to save in the file
-CMD_VALUE : [[0.5,0.5,1.57] ,[0.5,0.5,1.57] ,[0.5,0.5,1.57],[0.5,0.5,1.57]]   ;where to go
+CMD_VALUE : [[0.5,0.5,1.57] ,[0.5,0.5,1.57] ,[0.5,0.5,1.57],[0.5,0.5,1.57]]   ;where to go = path to follow repeated NBR_ESSAIS times
 SECU : 0.3                          ; to REMOVE??
 IP : 10.0.206.111                   ;pepper IP
 PORT : 9559
