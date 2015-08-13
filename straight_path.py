@@ -78,9 +78,10 @@ def go_to_init_zone(NBR_POSITIONEMENT_DEPART, POSITION_DEPART, INIT_ODOM_STEP):
             if abs(resp.x) > SECU or abs(resp.y) > SECU:
                 # print "##secuuu :  ", resp.x, resp.y, resp.theta
                 # print "k=", k
-                resp.x = 0
-                resp.y = 0
-                resp.theta = 0
+                time.sleep(2)
+                resp = how_to_go(
+                    POSITION_DEPART[0], POSITION_DEPART[1], POSITION_DEPART[2])
+
         # print "##I need to :  ", resp.x, resp.y, resp.theta
         if motionProxy.moveIsActive() == False:
             motionProxy.post.moveTo(resp.x, resp.y, resp.theta)
