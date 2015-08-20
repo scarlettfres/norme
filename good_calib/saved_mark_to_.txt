@@ -1,1 +1,1 @@
-mon_tf/HeadTouchFront_frame ar_marker_16 0.03 -0.0 -0.0182321929106 0.00905933395134 0.0664053274958 0.00594688176848 0.997733880123
+mon_tf/HeadTouchMiddle_frame ar_marker_16 0.0 0.0 0 0.0 0.0 0.0 1.0

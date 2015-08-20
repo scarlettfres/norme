@@ -33,7 +33,7 @@ if __name__ == '__main__':
     ymin = min([y.min(), y_head.min(), y_odom.min()]) - 0.1
     ymax = max([y.max(), y_head.max(), y_odom.max()]) + 0.1
 
-    command = fichier1[0][11]
+    #command = fichier1[0][11]
     nbr_essais = int(testnum.max()) + 1
     print nbr_essais
 
@@ -61,7 +61,7 @@ if __name__ == '__main__':
     """
     for it in range(0, nbr_essais):
         vect = final_tab[it]
-        print "ddd", final_tab[0][0]
+        #print "ddd", final_tab[0][0]
         print len(vect)
         vect = numpy.asarray(vect)
         size = len(vect)
