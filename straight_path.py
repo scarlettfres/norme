@@ -157,10 +157,14 @@ if __name__ == "__main__":
                     print" saving in file ...write in doc "
 
                     # save the data in a file
-                    message = str(i) + "," + str(time.time() - begin) + "," + str(
-                        resp_fin.x) + ","
-                    message = message + str(
-                        resp_fin.y) + "," + str(resp_fin.theta)
+                    message = str(i) + "," + str(time.time() - begin) + ","
+                    if resp_fin[3] == True:
+                        message = message + str(
+                            resp_fin.x) + "," + str(
+                            resp_fin.y) + "," + str(resp_fin.theta)
+                    else:
+                        message = message + "NOT" + "," + "NOT" + "," + "NOT"
+
                     message = message + "," + str(tete_fin.x) + "," + str(
                         tete_fin.y) + "," + str(tete_fin.theta)
                     message = message + "," + str(odom_fin.x) + "," + str(
