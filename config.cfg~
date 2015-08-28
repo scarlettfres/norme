@@ -5,21 +5,21 @@ SAVE: 0 1 0
 MARK_INIT_PLAN: 3
 MARK_TO_ROBOT: [16]
 MARK_TO_ROBOT_POSITION: [[1.27,-2.03,0]]
-ROBOT_FRAME : ["/HeadTouchFront_frame"]
+ROBOT_FRAME : ["/Head"]
 ADD_MARK:3
 PATH: /catkin_ws/src/norme/good_calib
 
 [Straight]
-PATH : /home/sfress/norme/csv/      ; where to save the data
+PATH : /catkin_ws/src/norme/csv      ; where to save the data
 TITLE : straight_line.csv
 NBR_ESSAIS : 5  ; how many trials?
-POSITION_DEPART : -0.3 -0.5 -3.14   ; or the ID of the mark saved
+POSITION_DEPART :  1.5 -2 1.57   ; or the ID of the mark saved
 NBR_POSITIONEMENT_DEPART : 3        ; how many times the robot position itself to be sure it is in the right place
 
 FRAME_TO_TRACK : base_link          ; what to save in the file
-CMD_VALUE : [[0.5,0.5,1.57] ,[0.5,0.5,1.57] ,[0.5,0.5,1.57],[0.5,0.5,1.57]]   ;where to go = path to follow repeated NBR_ESSAIS times
+CMD_VALUE : [[1,0,0]] ;where to go = path to follow repeated NBR_ESSAIS times
 SECU : 0.3                          ; to REMOVE??
-IP : 10.0.206.111                   ;pepper IP
+IP : 10.0.204.34                   ;pepper IP
 PORT : 9559
 INIT_ODOM_STEP : 1                  ; reconfigure the odom before each new trial
 

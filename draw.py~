@@ -61,7 +61,7 @@ if __name__ == '__main__':
     """
     for it in range(0, nbr_essais):
         vect = final_tab[it]
-        print "ddd", final_tab[0][0]
+        #print "ddd", final_tab[0][0]
         print len(vect)
         vect = numpy.asarray(vect)
         size = len(vect)
