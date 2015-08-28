@@ -158,12 +158,13 @@ if __name__ == "__main__":
 
                     # save the data in a file
                     message = str(i) + "," + str(time.time() - begin) + ","
-                    if resp_fin[3] == True:
+                    if resp_fin.result == True:
                         message = message + str(
                             resp_fin.x) + "," + str(
                             resp_fin.y) + "," + str(resp_fin.theta)
                     else:
-                        message = message + "NOT" + "," + "NOT" + "," + "NOT"
+                        message = message + "-100" + \
+                            "," + "-100" + "," + "-100"
 
                     message = message + "," + str(tete_fin.x) + "," + str(
                         tete_fin.y) + "," + str(tete_fin.theta)
